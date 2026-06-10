@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Adam's Stag Pub Golf</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#0f0f0f;font-family:system-ui,-apple-system,sans-serif;color:#f0f0f0;min-height:100vh}
+#app{max-width:390px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.screen{display:none;flex-direction:column;min-height:100vh}
+.screen.active{display:flex}
+input,textarea{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:#f0f0f0;font-size:15px;padding:12px 14px;width:100%;outline:none;font-family:inherit}
+input:focus,textarea:focus{border-color:#c8a96e}
+.btn{border-radius:12px;font-size:15px;font-weight:600;padding:14px;width:100%;cursor:pointer;font-family:inherit;transition:transform 0.1s;border:none;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{transform:scale(0.97)}
+.btn-gold{background:#c8a96e;color:#0f0f0f}
+.btn-outline{background:transparent;border:1px solid #333;color:#f0f0f0}
+.btn-ghost{background:transparent;border:none;color:#666;font-size:13px;cursor:pointer;font-family:inherit;padding:8px;width:100%}
+.btn-icon{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:#888;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.btn-icon:active{transform:scale(0.95)}
+.card{background:#1a1a1a;border:1px solid #242424;border-radius:16px;padding:16px}
+.sips-control{display:flex;align-items:center;background:#111;border:1px solid #2a2a2a;border-radius:12px;overflow:hidden}
+.sips-btn{background:transparent;border:none;color:#c8a96e;font-size:26px;font-weight:300;width:60px;height:56px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sips-btn:active{background:#1e1e1e}
+.sips-val{flex:1;text-align:center;font-size:28px;font-weight:800}
+.dots{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:320px}
+.dot{width:7px;height:7px;border-radius:50%;background:#2a2a2a;transition:all 0.2s;cursor:pointer}
+.dot.done{background:#3a3a3a}
+.dot.active{width:20px;border-radius:4px;background:#c8a96e}
+.field-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #222}
+.field-row:last-child{border-bottom:none}
+.field-label{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.05em;width:52px;flex-shrink:0}
+.field-value{flex:1;font-size:14px;color:#e0e0e0}
+.list-item{background:#1a1a1a;border:1px solid #242424;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.list-num{width:28px;height:28px;border-radius:8px;background:#111;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#c8a96e;flex-shrink:0}
+.list-name{font-size:14px;font-weight:600;color:#f0f0f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-sub{font-size:11px;color:#555;margin-top:2px}
+.arrowbtn{background:#111;border:1px solid #222;border-radius:6px;color:#555;width:28px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px}
+.arrowbtn:active{background:#1e1e1e;color:#f0f0f0}
+.nav-bar{display:flex;gap:8px;padding:12px 16px;background:#0f0f0f;border-top:1px solid #1a1a1a}
+.nav-bar .btn{flex:1;padding:13px 8px;font-size:14px}
+.sbadge{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:13px;font-weight:600}
+.sg{background:rgba(74,222,128,0.12);color:#4ade80}
+.sb{background:rgba(248,113,113,0.12);color:#f87171}
+.sn{background:#1e1e1e;color:#555}
+.ie-box{display:none;margin-top:6px;margin-bottom:4px;padding:14px;background:#111;border:1px solid #c8a96e;border-radius:14px}
+.result-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #1e1e1e}
+.result-row:last-child{border-bottom:none}
+.slide-wrap{flex:1;overflow:hidden;position:relative;min-height:400px}
+.slide{position:absolute;inset:0;overflow-y:auto;padding:14px 16px;transition:transform 0.28s cubic-bezier(0.4,0,0.2,1),opacity 0.28s}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="sn" class="screen" style="justify-content:center;padding:32px 24px">
+  <div style="text-align:center;margin-bottom:48px">
+    <div style="font-size:11px;letter-spacing:0.15em;color:#555;margin-bottom:12px">BACHELOR PARTY</div>
+    <div style="font-size:30px;font-weight:800;color:#c8a96e;line-height:1.1">Adam's Stag<br>Pub Golf</div>
+    <div style="font-size:13px;color:#444;margin-top:10px">Bucharest 2026</div>
+  </div>
+  <div style="margin-bottom:32px">
+    <div style="font-size:12px;color:#555;margin-bottom:8px;letter-spacing:0.05em">YOUR NAME</div>
+    <input id="pni" type="text" placeholder="Enter your name..." maxlength="20" style="font-size:18px;text-align:center;font-weight:600">
+  </div>
+  <button class="btn btn-gold" onclick="goSetup()">Continue <i class="ti ti-arrow-right" style="font-size:16px"></i></button>
+</div>
+
+<div id="ss" class="screen">
+  <div style="padding:14px 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1a1a">
+    <button class="btn-icon" onclick="showS('sn')" aria-label="Back"><i class="ti ti-arrow-left" style="font-size:18px"></i></button>
+    <div style="flex:1">
+      <div style="font-size:10px;color:#555;letter-spacing:0.05em">PLAYER</div>
+      <div id="spn" style="font-size:15px;font-weight:700;color:#c8a96e"></div>
+    </div>
+    <button class="btn-icon" onclick="addStop(false)" aria-label="Add stop"><i class="ti ti-plus" style="font-size:18px"></i></button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:12px 16px" id="sl"></div>
+  <div style="padding:12px 16px;border-top:1px solid #1a1a1a">
+    <button class="btn btn-gold" onclick="startGame()"><i class="ti ti-flag" style="font-size:16px"></i> Let's start</button>
+  </div>
+</div>
+
+<div id="sg" class="screen">
+  <div style="padding:11px 16px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a1a1a">
+    <div><div style="font-size:10px;color:#555;letter-spacing:0.05em">PLAYER</div><div id="gn" style="font-size:14px;font-weight:700;color:#c8a96e"></div></div>
+    <div id="gsc"></div>
+  </div>
+  <div style="padding:8px 16px 4px;display:flex;justify-content:center"><div class="dots" id="gdots"></div></div>
+  <div class="slide-wrap" id="swrap">
+    <div class="slide" id="sa" style="transform:translateX(0);opacity:1"></div>
+    <div class="slide" id="sb" style="transform:translateX(100%);opacity:0"></div>
+  </div>
+  <div class="nav-bar" id="gnav"></div>
+</div>
+
+<div id="sgl" class="screen">
+  <div style="padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1a1a1a">
+    <button class="btn-icon" onclick="backToGame()" aria-label="Back"><i class="ti ti-arrow-left" style="font-size:18px"></i></button>
+    <div style="flex:1;font-size:16px;font-weight:700">All stops</div>
+    <button class="btn-icon" onclick="addStop(true)" aria-label="Add"><i class="ti ti-plus" style="font-size:18px"></i></button>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:12px 16px" id="gll"></div>
+  <div style="padding:12px 16px;border-top:1px solid #1a1a1a">
+    <button class="btn btn-gold" onclick="backToGame()">Back to game</button>
+  </div>
+</div>
+
+<div id="sf" class="screen">
+  <div style="padding:14px 16px;text-align:center;border-bottom:1px solid #1a1a1a">
+    <div style="font-size:10px;color:#555;letter-spacing:0.1em;margin-bottom:4px">FINAL SCORE</div>
+    <div id="fn" style="font-size:18px;font-weight:700;color:#c8a96e"></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:16px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div id="fsc" style="font-size:60px;font-weight:800;letter-spacing:-2px;line-height:1"></div>
+      <div id="flb" style="font-size:13px;color:#666;margin-top:6px"></div>
+    </div>
+    <div id="ftb" style="margin-bottom:16px"></div>
+    <button class="btn btn-outline" onclick="doExport()" style="margin-bottom:8px"><i class="ti ti-download" style="font-size:16px"></i> Export JSON</button>
+    <button class="btn btn-ghost" onclick="reviewGame()">Review &amp; edit stops</button>
+  </div>
+</div>
+
+<div id="sex" class="screen" style="padding:16px;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+    <button class="btn-icon" onclick="showS('sf')" aria-label="Back"><i class="ti ti-arrow-left" style="font-size:18px"></i></button>
+    <div style="font-size:16px;font-weight:700">Export JSON</div>
+  </div>
+  <textarea id="extxt" rows="16" style="resize:none;font-size:11px;font-family:monospace;margin-bottom:12px;flex:1" readonly></textarea>
+  <button class="btn btn-gold" onclick="showS('sf')">Done</button>
+</div>
+
+</div>
+
+<script>
+const DEF=[
+  {name:"DeSoi / PERL",drink:"Mimosa",par:2,sips:0,notes:"",maps:"https://www.google.com/maps/place/?q=place_id:ChIJD9_SzAv_sUARrCKfLPHJ0II"},
+  {name:"Pardon Pub",drink:"Craft beer",par:3,sips:0,notes:"",maps:"https://www.google.com/maps/place/?q=place_id:ChIJo0x9Kkj_sUAR4uR3WFtGJGw"},
+  {name:"QP Pub",drink:"Craft beer",par:3,sips:0,notes:"",maps:"https://www.google.com/maps/place/?q=place_id:ChIJE4yXZUj_sUARnaNfx0WjgvM"},
+  {name:"Sera Eden",drink:"House cocktail",par:3,sips:0,notes:"",maps:"https://www.google.com/maps/place/?q=place_id:ChIJw90EY9L_sUARo6r9MIEWtKA"},
+  {name:"Bar Ton",drink:"Wine",par:2,sips:0,notes:"",maps:"https://www.google.com/maps/place/?q=place_id:ChIJRdZqp-X_sUARUoynjmcL4DM"},
+  {name:"Energiea",drink:"Slivovica",par:1,sips:0,notes:"",maps:"https://www.google.com/maps/place/?q=place_id:ChIJaY6CmEH_sUARe59cp55TT5M"},
+  {name:"Negroni / Fix Me A Drink",drink:"Cocktail",par:2,sips:0,notes:"",maps:""},
+  {name:"Bartini Rooftop",drink:"Espresso Martini",par:2,sips:0,notes:"",maps:"https://www.google.com/maps/place/?q=place_id:ChIJb5pCNgD_sUARQZZpCjZR0bs"}
+];
+
+let ST={player:"",stops:[],idx:0,started:false};
+let slot="a";
+
+function save(){try{localStorage.setItem("pgs4",JSON.stringify(ST));}catch(e){}}
+function loadST(){try{const r=localStorage.getItem("pgs4");if(r){ST=JSON.parse(r);return true;}}catch(e){}return false;}
+function showS(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function totalScore(){return ST.stops.reduce((a,s)=>a+(s.sips-s.par),0);}
+function scoreLabel(n){return n===0?"Even par":n<0?Math.abs(n)+" under par":n+" over par";}
+function badge(n,played){
+  if(!played)return'<span class="sbadge sn">No score yet</span>';
+  if(n<0)return`<span class="sbadge sg"><i class="ti ti-trending-down" style="font-size:12px"></i> ${Math.abs(n)} under</span>`;
+  if(n>0)return`<span class="sbadge sb"><i class="ti ti-trending-up" style="font-size:12px"></i> ${n} over</span>`;
+  return'<span class="sbadge sn">Even par</span>';
+}
+
+function goSetup(){
+  const n=document.getElementById("pni").value.trim();
+  if(!n){document.getElementById("pni").focus();return;}
+  ST.player=n;
+  if(!ST.stops.length)ST.stops=JSON.parse(JSON.stringify(DEF));
+  save();renderSetup();showS("ss");
+}
+
+function ieHTML(i){
+  const s=ST.stops[i];
+  return`<div style="font-size:11px;color:#c8a96e;font-weight:700;margin-bottom:10px;letter-spacing:0.05em">EDIT STOP ${i+1}</div>
+    <div style="margin-bottom:8px"><div style="font-size:10px;color:#555;margin-bottom:4px">BAR NAME</div><input id="ie-nm-${i}" value="${esc(s.name)}" maxlength="40"></div>
+    <div style="margin-bottom:8px"><div style="font-size:10px;color:#555;margin-bottom:4px">DRINK</div><input id="ie-dr-${i}" value="${esc(s.drink)}" maxlength="40"></div>
+    <div style="margin-bottom:8px"><div style="font-size:10px;color:#555;margin-bottom:4px">PAR (sips)</div><input id="ie-pr-${i}" type="number" value="${s.par}" min="1" max="10" style="width:80px"></div>
+    <div style="margin-bottom:12px"><div style="font-size:10px;color:#555;margin-bottom:4px">NOTES</div><textarea id="ie-nt-${i}" rows="2" style="resize:none">${esc(s.notes)}</textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-outline" style="flex:1;padding:10px" onclick="closeIE(event,${i})"><i class="ti ti-x" style="font-size:15px"></i></button>
+      <button class="btn btn-gold" style="flex:2;padding:10px" onclick="saveIE(event,${i})"><i class="ti ti-check" style="font-size:15px"></i> Save</button>
+    </div>`;
+}
+
+function toggleIE(event,prefix,i){
+  event.stopPropagation();
+  const id=`${prefix}${i}`;
+  document.querySelectorAll(".ie-box").forEach(el=>{if(el.id!==id)el.style.display="none";});
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(el.style.display==="block"){el.style.display="none";}
+  else{el.innerHTML=ieHTML(i);el.style.display="block";}
+}
+function closeIE(event,i){event.stopPropagation();document.querySelectorAll(".ie-box").forEach(el=>el.style.display="none");}
+function saveIE(event,i){
+  event.stopPropagation();
+  const nm=document.getElementById(`ie-nm-${i}`);
+  const dr=document.getElementById(`ie-dr-${i}`);
+  const pr=document.getElementById(`ie-pr-${i}`);
+  const nt=document.getElementById(`ie-nt-${i}`);
+  if(nm&&nm.value.trim())ST.stops[i].name=nm.value.trim();
+  if(dr&&dr.value.trim())ST.stops[i].drink=dr.value.trim();
+  if(pr)ST.stops[i].par=Math.max(1,Math.min(10,parseInt(pr.value)||1));
+  if(nt)ST.stops[i].notes=nt.value.trim();
+  save();
+  document.querySelectorAll(".ie-box").forEach(el=>el.style.display="none");
+  const active=document.querySelector(".screen.active");
+  if(active){
+    if(active.id==="ss")renderSetup();
+    else if(active.id==="sgl")renderGameList();
+    else if(active.id==="sg")renderSlide(ST.idx,null);
+  }
+}
+
+function renderSetup(){
+  document.getElementById("spn").textContent=ST.player;
+  document.getElementById("sl").innerHTML=ST.stops.map((s,i)=>`
+    <div>
+      <div class="list-item">
+        <div class="list-num">${i+1}</div>
+        <div style="flex:1;min-width:0">
+          <div class="list-name">${esc(s.name)}</div>
+          <div class="list-sub">${esc(s.drink)} · par ${s.par}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <div class="arrowbtn" onclick="moveStop(${i},-1,'setup')"><i class="ti ti-chevron-up"></i></div>
+            <div class="arrowbtn" onclick="moveStop(${i},1,'setup')"><i class="ti ti-chevron-down"></i></div>
+          </div>
+          <button class="btn-icon" onclick="toggleIE(event,'ie-s-',${i})" aria-label="Edit"><i class="ti ti-edit" style="font-size:15px;color:#c8a96e"></i></button>
+          <button class="btn-icon" onclick="removeStop(${i},'setup')" aria-label="Remove"><i class="ti ti-trash" style="font-size:15px;color:#555"></i></button>
+        </div>
+      </div>
+      <div class="ie-box" id="ie-s-${i}"></div>
+    </div>
+  `).join("");
+}
+
+function moveStop(i,dir,ctx){
+  const j=i+dir;if(j<0||j>=ST.stops.length)return;
+  [ST.stops[i],ST.stops[j]]=[ST.stops[j],ST.stops[i]];
+  if(ST.idx===i)ST.idx=j;else if(ST.idx===j)ST.idx=i;
+  save();if(ctx==="setup")renderSetup();else renderGameList();
+}
+function removeStop(i,ctx){
+  ST.stops.splice(i,1);
+  if(ST.idx>=ST.stops.length)ST.idx=Math.max(0,ST.stops.length-1);
+  save();if(ctx==="setup")renderSetup();else renderGameList();
+}
+function addStop(fromList){
+  ST.stops.push({name:"New stop",drink:"Drink",par:2,sips:0,notes:"",maps:""});
+  save();if(fromList)renderGameList();else renderSetup();
+}
+function startGame(){
+  if(!ST.stops.length)return;
+  ST.started=true;ST.idx=0;save();
+  renderSlide(0,null);showS("sg");
+}
+
+function renderSlide(idx,dir){
+  document.getElementById("gn").textContent=ST.player;
+  const anyPlayed=ST.stops.some(s=>s.sips>0);
+  document.getElementById("gsc").innerHTML=badge(anyPlayed?totalScore():0,anyPlayed);
+  document.getElementById("gdots").innerHTML=ST.stops.map((_,i)=>{
+    let c="dot";if(i<idx)c+=" done";if(i===idx)c+=" active";
+    return`<div class="${c}" onclick="jumpTo(${i})"></div>`;
+  }).join("");
+
+  const s=ST.stops[idx];
+  const diff=s.sips-s.par;
+  const sc=diff>0?"#f87171":diff<0?"#4ade80":"#888";
+
+  const html=`
+    <div style="margin-bottom:12px">
+      <div style="font-size:10px;color:#555;letter-spacing:0.05em;margin-bottom:3px">STOP ${idx+1} OF ${ST.stops.length}</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div style="font-size:21px;font-weight:800;color:#f0f0f0;line-height:1.2;flex:1">${esc(s.name)}</div>
+        <button class="btn-icon" onclick="toggleIE(event,'ie-g-',${idx})" aria-label="Edit stop"><i class="ti ti-edit" style="font-size:15px;color:#c8a96e"></i></button>
+      </div>
+      ${s.maps?`<div style="margin-top:8px"><a href="${s.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:8px 12px;color:#c8a96e;text-decoration:none;font-size:12px;font-weight:600"><i class="ti ti-map-pin" style="font-size:13px"></i>Open in Maps</a></div>`:""}
+    </div>
+    <div class="ie-box" id="ie-g-${idx}"></div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="field-row">
+        <div class="field-label">Drink</div>
+        <div class="field-value">${esc(s.drink)}</div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Par</div>
+        <div class="field-value">${s.par} sips</div>
+      </div>
+      <div class="field-row" style="border-bottom:none">
+        <div class="field-label">Notes</div>
+        <div class="field-value" style="color:${s.notes?"#e0e0e0":"#444"}">${s.notes||"—"}</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:10px;color:#555;letter-spacing:0.05em;margin-bottom:10px">SIPS TAKEN</div>
+      <div class="sips-control">
+        <button class="sips-btn" onclick="chSips(${idx},-1)">−</button>
+        <div class="sips-val" style="color:${sc}">${s.sips}</div>
+        <button class="sips-btn" onclick="chSips(${idx},1)">+</button>
+      </div>
+      <div style="text-align:center;margin-top:10px;font-size:13px;font-weight:600;color:${sc}">
+        ${s.sips===0?"Tap + to start":diff>0?"+"+diff+" over par":diff<0?Math.abs(diff)+" under par":"Even par"}
+      </div>
+    </div>
+  `;
+
+  const ca=slot==="a"?"sa":"sb";
+  const cn=slot==="a"?"sb":"sa";
+  const ce=document.getElementById(ca);
+  const ne=document.getElementById(cn);
+
+  if(dir===null){
+    ce.innerHTML=html;ce.style.transition="none";
+    ce.style.transform="translateX(0)";ce.style.opacity="1";
+    ne.innerHTML="";ne.style.transition="none";
+    ne.style.transform="translateX(100%)";ne.style.opacity="0";
+    renderNav(idx);return;
+  }
+  ne.innerHTML=html;
+  ne.style.transition="none";
+  ne.style.transform=dir>0?"translateX(100%)":"translateX(-100%)";
+  ne.style.opacity="0";
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    ce.style.transition="transform 0.28s cubic-bezier(0.4,0,0.2,1),opacity 0.28s";
+    ne.style.transition="transform 0.28s cubic-bezier(0.4,0,0.2,1),opacity 0.28s";
+    ce.style.transform=dir>0?"translateX(-100%)":"translateX(100%)";ce.style.opacity="0";
+    ne.style.transform="translateX(0)";ne.style.opacity="1";
+    slot=slot==="a"?"b":"a";
+    setTimeout(()=>renderNav(idx),30);
+  }));
+}
+
+function renderNav(idx){
+  const isF=idx===0,isL=idx===ST.stops.length-1;
+  let h="";
+  h+=isF?`<div style="flex:1"></div>`:`<button class="btn btn-outline" onclick="prevStop()"><i class="ti ti-arrow-left" style="font-size:15px"></i></button>`;
+  h+=`<button class="btn btn-outline" style="flex:0 0 46px;padding:0" onclick="goList()"><i class="ti ti-list" style="font-size:17px"></i></button>`;
+  h+=isL?`<button class="btn btn-gold" onclick="finish()"><i class="ti ti-trophy" style="font-size:15px"></i> Finish</button>`:`<button class="btn btn-gold" onclick="nextStop()">Next <i class="ti ti-arrow-right" style="font-size:15px"></i></button>`;
+  document.getElementById("gnav").innerHTML=h;
+}
+
+function chSips(idx,d){ST.stops[idx].sips=Math.max(0,ST.stops[idx].sips+d);save();renderSlide(idx,null);}
+function nextStop(){if(ST.idx<ST.stops.length-1){ST.idx++;save();renderSlide(ST.idx,1);}}
+function prevStop(){if(ST.idx>0){ST.idx--;save();renderSlide(ST.idx,-1);}}
+function jumpTo(i){if(i===ST.idx)return;const d=i>ST.idx?1:-1;ST.idx=i;save();renderSlide(i,d);}
+function goList(){renderGameList();showS("sgl");}
+function backToGame(){renderSlide(ST.idx,null);showS("sg");}
+
+function renderGameList(){
+  document.getElementById("gll").innerHTML=ST.stops.map((s,i)=>{
+    const diff=s.sips-s.par;
+    const col=s.sips===0?"#444":diff>0?"#f87171":diff<0?"#4ade80":"#888";
+    const sc=s.sips===0?"—":diff>0?"+"+diff:""+diff;
+    return`<div>
+      <div class="list-item" style="${i===ST.idx?"border-color:#c8a96e;":""}">
+        <div class="list-num" onclick="jumpToList(${i})" style="cursor:pointer">${i+1}</div>
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="jumpToList(${i})">
+          <div class="list-name">${esc(s.name)}</div>
+          <div class="list-sub">${esc(s.drink)} · par ${s.par}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="font-size:18px;font-weight:800;color:${col};min-width:28px;text-align:right">${sc}</div>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <div class="arrowbtn" onclick="moveStop(${i},-1,'list')"><i class="ti ti-chevron-up"></i></div>
+            <div class="arrowbtn" onclick="moveStop(${i},1,'list')"><i class="ti ti-chevron-down"></i></div>
+          </div>
+          <button class="btn-icon" onclick="toggleIE(event,'ie-l-',${i})" aria-label="Edit"><i class="ti ti-edit" style="font-size:14px;color:#c8a96e"></i></button>
+        </div>
+      </div>
+      <div class="ie-box" id="ie-l-${i}"></div>
+    </div>`;
+  }).join("");
+}
+
+function jumpToList(i){ST.idx=i;save();renderSlide(i,null);showS("sg");}
+
+function finish(){
+  showS("sf");
+  document.getElementById("fn").textContent=ST.player;
+  const total=totalScore();
+  const sc=document.getElementById("fsc");
+  sc.textContent=total>0?"+"+total:total;
+  sc.style.color=total<0?"#4ade80":total>0?"#f87171":"#888";
+  document.getElementById("flb").textContent=scoreLabel(total);
+  document.getElementById("ftb").innerHTML=`<div class="card">${ST.stops.map((s,i)=>{
+    const diff=s.sips-s.par;
+    const col=s.sips===0?"#444":diff>0?"#f87171":diff<0?"#4ade80":"#888";
+    return`<div class="result-row">
+      <div class="list-num" style="width:22px;height:22px;font-size:11px">${i+1}</div>
+      <div style="flex:1;min-width:0;margin-left:8px">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(s.name)}</div>
+        <div style="font-size:11px;color:#555">${esc(s.drink)} · par ${s.par}</div>
+      </div>
+      <div style="font-size:18px;font-weight:800;color:${col};min-width:32px;text-align:right">${s.sips===0?"—":diff>0?"+"+diff:""+diff}</div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function reviewGame(){renderGameList();showS("sgl");}
+function doExport(){
+  const data={player:ST.player,exported:new Date().toISOString(),total_score:totalScore(),score_label:scoreLabel(totalScore()),stops:ST.stops.map((s,i)=>({stop:i+1,bar:s.name,drink:s.drink,par:s.par,sips:s.sips,score:s.sips-s.par,notes:s.notes}))};
+  document.getElementById("extxt").value=JSON.stringify(data,null,2);
+  showS("sex");
+}
+
+(function init(){
+  const had=loadST();
+  if(had&&ST.player){
+    document.getElementById("pni").value=ST.player;
+    if(ST.started){renderSlide(ST.idx,null);showS("sg");}
+    else{renderSetup();showS("ss");}
+  } else showS("sn");
+})();
+</script>
+</body>
+</html>
