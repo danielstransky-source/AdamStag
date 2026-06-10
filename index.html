@@ -1,0 +1,637 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+#app{background:#0f0f0f;min-height:600px;color:#f0f0f0;max-width:400px;margin:0 auto;position:relative;overflow:hidden}
+.screen{display:none;flex-direction:column;min-height:600px}
+.screen.active{display:flex}
+.gold{color:#c8a96e}
+.muted{color:#888}
+.app-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#888;text-align:center;padding:20px 20px 4px}
+.app-sub{font-size:22px;font-weight:500;color:#c8a96e;text-align:center;padding:0 20px 24px;line-height:1.3}
+.btn-primary{background:#c8a96e;color:#0f0f0f;border:none;border-radius:8px;padding:14px 24px;font-size:15px;font-weight:500;cursor:pointer;width:100%;transition:opacity .15s}
+.btn-primary:active{opacity:.8}
+.btn-secondary{background:transparent;color:#f0f0f0;border:1px solid #333;border-radius:8px;padding:12px 20px;font-size:14px;cursor:pointer;transition:background .15s}
+.btn-secondary:active{background:#1a1a1a}
+.btn-ghost{background:transparent;color:#888;border:none;font-size:13px;cursor:pointer;padding:8px 12px}
+.field-wrap{margin-bottom:16px}
+.field-label{font-size:12px;color:#888;margin-bottom:6px;letter-spacing:.5px}
+.field-input{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#f0f0f0;font-size:16px;padding:12px 14px;width:100%;outline:none}
+.field-input:focus{border-color:#c8a96e}
+#s1{padding:0;align-items:center;justify-content:center}
+.s1-inner{width:100%;padding:24px}
+.s1-inner .field-input{font-size:22px;text-align:center;padding:16px;letter-spacing:1px}
+#s2 .header{padding:16px 16px 8px;border-bottom:1px solid #1a1a1a}
+#s2 .header h2{font-size:16px;font-weight:500}
+#s2 .header p{font-size:12px;color:#888;margin-top:2px}
+.bar-list{flex:1;overflow-y:auto;padding:8px 0}
+.bar-item{padding:10px 16px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;gap:8px}
+.bar-num{font-size:12px;color:#888;width:18px;flex-shrink:0}
+.bar-info{flex:1;min-width:0}
+.bar-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-detail{font-size:12px;color:#888;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-actions{display:flex;gap:4px;align-items:center;flex-shrink:0}
+.icon-btn{background:transparent;border:none;color:#555;cursor:pointer;padding:6px;border-radius:6px;font-size:16px;display:flex;align-items:center;justify-content:center;transition:color .15s}
+.icon-btn:active{color:#c8a96e}
+.reorder-btns{display:flex;flex-direction:column;gap:1px}
+.reorder-btns button{background:transparent;border:none;color:#444;cursor:pointer;font-size:12px;line-height:1;padding:1px 4px}
+.reorder-btns button:active{color:#c8a96e}
+#s2 .footer{padding:12px 16px;border-top:1px solid #1a1a1a}
+.add-bar-btn{display:flex;align-items:center;gap:8px;background:transparent;border:1px dashed #2a2a2a;border-radius:8px;color:#888;padding:10px 16px;cursor:pointer;width:100%;margin-bottom:10px;font-size:13px}
+#s3{position:relative}
+#s3 .header{padding:12px 16px 8px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.progress-dots{display:flex;gap:5px;justify-content:center;margin-bottom:6px;flex-wrap:wrap;padding:0 8px}
+.dot{width:7px;height:7px;border-radius:50%;background:#2a2a2a;transition:background .2s;flex-shrink:0}
+.dot.active{background:#c8a96e}
+.dot.done{background:#555}
+.score-bar{display:flex;justify-content:space-between;align-items:center}
+.score-label{font-size:12px;color:#888}
+.score-val{font-size:16px;font-weight:500}
+.score-val.under{color:#4ade80}
+.score-val.over{color:#f87171}
+.score-val.even{color:#888}
+.card-viewport{flex:1;overflow:hidden;position:relative}
+.card-slider{display:flex;transition:transform .3s ease;height:100%}
+.game-card{min-width:100%;padding:16px;overflow-y:auto;flex-shrink:0}
+.card-inner{background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;padding:16px}
+.card-bar-num{font-size:11px;color:#888;letter-spacing:1px;margin-bottom:4px}
+.card-bar-name{font-size:20px;font-weight:500;margin-bottom:2px}
+.card-bar-drink{font-size:14px;color:#888;margin-bottom:12px}
+.maps-btn{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid #2a2a2a;border-radius:6px;padding:7px 12px;color:#888;font-size:12px;cursor:pointer;margin-bottom:12px;text-decoration:none}
+.maps-btn i{font-size:14px}
+.divider{border:none;border-top:1px solid #2a2a2a;margin:12px 0}
+.par-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.par-label{font-size:12px;color:#888}
+.par-val{font-size:14px;color:#c8a96e;font-weight:500}
+.sips-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sips-label{font-size:14px}
+.sips-control{display:flex;align-items:center;gap:12px}
+.sip-btn{background:#2a2a2a;border:none;color:#f0f0f0;width:36px;height:36px;border-radius:8px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.sip-btn:active{background:#3a3a3a}
+.sip-count{font-size:24px;font-weight:500;min-width:28px;text-align:center}
+.card-status{margin-top:8px;font-size:12px;padding:6px 10px;border-radius:6px;font-weight:500}
+.card-status.under{background:rgba(74,222,128,.12);color:#4ade80}
+.card-status.over{background:rgba(248,113,113,.12);color:#f87171}
+.card-status.even{background:#1f1f1f;color:#888}
+.card-notes{font-size:13px;color:#888;margin-top:10px;background:#161616;border-radius:6px;padding:8px}
+.edit-pen{background:transparent;border:none;color:#555;cursor:pointer;font-size:14px;padding:4px}
+.edit-pen:hover{color:#c8a96e}
+.edit-popup{background:#222;border:1px solid #333;border-radius:10px;padding:14px;margin-top:8px}
+.edit-popup .field-input{font-size:14px;padding:10px 12px;margin-bottom:8px}
+.edit-popup-btns{display:flex;gap:8px}
+.edit-confirm{background:#4ade80;color:#0f0f0f;border:none;border-radius:6px;padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;flex:1}
+.edit-discard{background:transparent;border:1px solid #444;color:#888;border-radius:6px;padding:8px 16px;font-size:13px;cursor:pointer;flex:1}
+.card-actions-row{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #2a2a2a}
+.card-action-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:transparent;border:1px solid #2a2a2a;border-radius:7px;color:#888;font-size:12px;padding:8px 6px;cursor:pointer;transition:all .15s}
+.card-action-btn:active{background:#2a2a2a;color:#f0f0f0}
+.card-action-btn.duplicate{border-color:#c8a96e33;color:#c8a96e}
+.card-action-btn.duplicate:active{background:#c8a96e22}
+.game-nav{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #1a1a1a;flex-shrink:0}
+.nav-btn{flex:1;padding:12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #2a2a2a;background:transparent;color:#888;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.nav-btn:active{background:#1a1a1a}
+.nav-btn.primary{background:#c8a96e;color:#0f0f0f;border-color:#c8a96e}
+.nav-btn.primary:active{opacity:.85}
+.nav-btn i{font-size:16px}
+#s-list{background:#0f0f0f}
+#s-list .header{padding:14px 16px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between}
+#s-list .header h2{font-size:16px;font-weight:500}
+.list-item{padding:10px 16px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;gap:8px;cursor:pointer}
+.list-item:active{background:#1a1a1a}
+.list-dot{width:8px;height:8px;border-radius:50%;background:#2a2a2a;flex-shrink:0}
+.list-dot.done{background:#4ade80}
+.list-dot.current{background:#c8a96e}
+.list-info{flex:1;min-width:0}
+.list-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-detail{font-size:12px;color:#888;margin-top:1px}
+.list-score{font-size:13px;font-weight:500}
+.list-score.under{color:#4ade80}
+.list-score.over{color:#f87171}
+.list-score.even{color:#888}
+.list-footer{padding:12px 16px;border-top:1px solid #1a1a1a;display:flex;gap:8px}
+#s4{padding:20px 16px}
+#s4 h2{font-size:22px;font-weight:500;margin-bottom:4px}
+#s4 .winner-badge{font-size:12px;color:#888;margin-bottom:20px}
+.result-rows{margin-bottom:20px}
+.result-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1a1a1a}
+.rr-num{font-size:12px;color:#555;width:16px}
+.rr-name{flex:1;font-size:14px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr-drink{font-size:12px;color:#555;width:80px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr-sips{font-size:12px;color:#888;width:48px;text-align:center}
+.rr-score{font-size:14px;font-weight:500;width:32px;text-align:right}
+.rr-score.under{color:#4ade80}
+.rr-score.over{color:#f87171}
+.rr-score.even{color:#888}
+.total-row{display:flex;justify-content:space-between;padding:12px 0;margin-top:4px}
+.total-label{font-size:14px;color:#888}
+.total-val{font-size:22px;font-weight:500}
+.total-val.under{color:#4ade80}
+.total-val.over{color:#f87171}
+.total-val.even{color:#888}
+.export-area{background:#161616;border-radius:8px;padding:12px;font-size:11px;color:#555;font-family:var(--font-mono);white-space:pre-wrap;word-break:break-all;margin-bottom:12px;max-height:120px;overflow-y:auto;display:none}
+</style>
+
+<div id="app">
+  <h2 class="sr-only">Adam's Stag Pub Golf scoring app</h2>
+
+  <div class="screen active" id="s1">
+    <div class="s1-inner">
+      <div class="app-title">Bukurešť 2026</div>
+      <div class="app-sub">Adam's Stag<br>Pub Golf</div>
+      <div class="field-wrap" style="margin-top:12px">
+        <div class="field-label">Your name</div>
+        <input class="field-input" id="player-name" type="text" placeholder="Zadaj meno..." autocomplete="off" />
+      </div>
+      <button class="btn-primary" onclick="startSetup()">Pokračovať <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="screen" id="s2">
+    <div class="header">
+      <h2>Pub Golf <span class="gold" id="s2-name"></span></h2>
+      <p>Uprav zastávky pred štartom</p>
+    </div>
+    <div class="bar-list" id="bar-list"></div>
+    <div class="footer">
+      <button class="add-bar-btn" onclick="addBar()">
+        <i class="ti ti-plus" aria-hidden="true"></i> Pridaj zastávku
+      </button>
+      <button class="btn-primary" onclick="startGame()">Let's Start <i class="ti ti-golf" aria-hidden="true"></i></button>
+    </div>
+  </div>
+
+  <div class="screen" id="s3">
+    <div class="header">
+      <div class="progress-dots" id="progress-dots"></div>
+      <div class="score-bar">
+        <span class="score-label" id="s3-name-label"></span>
+        <span class="score-val" id="s3-total-score"></span>
+      </div>
+    </div>
+    <div class="card-viewport">
+      <div class="card-slider" id="card-slider"></div>
+    </div>
+    <div class="game-nav" id="game-nav"></div>
+  </div>
+
+  <div class="screen" id="s-list">
+    <div class="header">
+      <h2>Všetky zastávky</h2>
+      <button class="icon-btn" onclick="closeList()" aria-label="Zavrieť"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="bar-list" id="list-items"></div>
+    <div class="list-footer">
+      <button class="btn-secondary" style="flex:1" onclick="addBarFromList()"><i class="ti ti-plus" aria-hidden="true"></i> Pridaj</button>
+      <button class="btn-secondary" style="flex:1" onclick="closeList()">Späť do hry</button>
+    </div>
+  </div>
+
+  <div class="screen" id="s4">
+    <div class="app-title">Adam's Stag Pub Golf · Bukurešť 2026</div>
+    <h2 id="s4-name"></h2>
+    <div class="winner-badge" id="s4-badge"></div>
+    <div class="result-rows" id="result-rows"></div>
+    <div class="total-row">
+      <span class="total-label">Celkové skóre</span>
+      <span class="total-val" id="s4-total"></span>
+    </div>
+    <div class="export-area" id="export-area"></div>
+    <button class="btn-primary" onclick="exportJSON()" style="margin-bottom:10px"><i class="ti ti-download" aria-hidden="true"></i> Exportuj JSON</button>
+    <button class="btn-secondary" onclick="reviewBars()" style="width:100%;margin-bottom:10px">Uprav záznamy</button>
+    <button class="btn-ghost" style="width:100%" onclick="backToName()">Nový hráč</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'pub_golf_2026_v3';
+
+const DEFAULT_BARS = [
+  {name:'DeSoi / PERL', drink:'Mimosa', par:2, notes:'Brunch štart, Regina Elisabeta 28/38', maps:'https://maps.google.com/?q=DeSoi+Cismigiu+Bucharest'},
+  {name:'Pardon Pub', drink:'Craft beer', par:3, notes:'C.A. Rosetti 10, zavolaj vopred pre 8', maps:'https://maps.google.com/?q=Pardon+Pub+Bucharest+Rosetti'},
+  {name:'Sera Eden', drink:'House koktail', par:3, notes:'C.A. Rosetti 37, walk-in, choď skoro', maps:'https://maps.google.com/?q=Sera+Eden+Bucharest'},
+  {name:'Bar Ton', drink:'Fľaša vína', par:2, notes:'Câmpineanu 24, do 23:00', maps:'https://maps.google.com/?q=Bar+Ton+Bucharest+Campineanu'},
+  {name:'Energiea', drink:'Slivovica', par:1, notes:'Brezoianu 4, shot pre ženícha', maps:'https://maps.google.com/?q=Energiea+Bucharest+Brezoianu'},
+  {name:'Negroni Bar', drink:'Negroni Spritz', par:2, notes:'Matei Millo 5', maps:'https://maps.google.com/?q=Negroni+Aperitivo+Bar+Bucharest'},
+  {name:'Fix Me A Drink', drink:'Botanical koktail', par:2, notes:'Brezoianu 23-25, 1. poschodie', maps:'https://maps.google.com/?q=Fix+Me+A+Drink+Bucharest'},
+  {name:'Bartini Rooftop', drink:'Espresso Martini', par:2, notes:'Constantin Mille 18, rezervácia 20:30', maps:'https://maps.google.com/?q=Bartini+Rooftop+Bucharest+Constantin+Mille'},
+];
+
+let state = {playerName:'', bars:[], currentIdx:0};
+
+function loadState(){
+  try{
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+    if(s) state = s;
+  }catch(e){}
+  try{
+    window.storage && window.storage.get(STORAGE_KEY).then(r=>{
+      if(r&&r.value){const s=JSON.parse(r.value);if(s&&s.playerName)state=s;}
+    });
+  }catch(e){}
+}
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  try{ window.storage && window.storage.set(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startSetup(){
+  const n = document.getElementById('player-name').value.trim();
+  if(!n){document.getElementById('player-name').focus();return;}
+  state.playerName = n;
+  if(!state.bars || state.bars.length === 0){
+    state.bars = DEFAULT_BARS.map((b,i)=>({...b,id:Date.now()+i,sips:0}));
+  }
+  saveState();
+  renderSetup();
+  showScreen('s2');
+}
+
+function renderSetup(){
+  document.getElementById('s2-name').textContent = state.playerName;
+  const list = document.getElementById('bar-list');
+  list.innerHTML = state.bars.map((b,i)=>`
+    <div class="bar-item" id="bi-${i}">
+      <span class="bar-num">${i+1}</span>
+      <div class="bar-info">
+        <div class="bar-name">${esc(b.name)}</div>
+        <div class="bar-detail">${esc(b.drink)} &middot; par ${b.par}</div>
+      </div>
+      <div class="bar-actions">
+        <div class="reorder-btns">
+          <button onclick="moveBar(${i},-1)" aria-label="Hore">&#9650;</button>
+          <button onclick="moveBar(${i},1)" aria-label="Dole">&#9660;</button>
+        </div>
+        <button class="icon-btn" onclick="editBarSetup(${i})" aria-label="Edituj"><i class="ti ti-pencil"></i></button>
+        <button class="icon-btn" onclick="deleteBar(${i})" aria-label="Vymaž"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+function moveBar(i, dir){
+  const j = i+dir;
+  if(j<0||j>=state.bars.length) return;
+  [state.bars[i],state.bars[j]]=[state.bars[j],state.bars[i]];
+  saveState(); renderSetup();
+}
+
+function deleteBar(i){
+  state.bars.splice(i,1);
+  saveState(); renderSetup();
+}
+
+function editBarSetup(i){
+  const b = state.bars[i];
+  const el = document.getElementById('bi-'+i);
+  const existing = el.querySelector('.edit-popup');
+  if(existing){existing.remove();return;}
+  const popup = document.createElement('div');
+  popup.className='edit-popup';
+  popup.innerHTML=`
+    <input class="field-input" id="ep-name" placeholder="Názov baru" value="${esc(b.name)}" />
+    <input class="field-input" id="ep-drink" placeholder="Drink" value="${esc(b.drink)}" />
+    <input class="field-input" id="ep-par" placeholder="Par" type="number" min="1" max="9" value="${b.par}" />
+    <input class="field-input" id="ep-notes" placeholder="Notes" value="${esc(b.notes||'')}" />
+    <div class="edit-popup-btns">
+      <button class="edit-confirm" onclick="saveBarSetup(${i})"><i class="ti ti-check"></i> Uložiť</button>
+      <button class="edit-discard" onclick="this.closest('.edit-popup').remove()"><i class="ti ti-x"></i> Zrušiť</button>
+    </div>`;
+  el.appendChild(popup);
+}
+
+function saveBarSetup(i){
+  const n=document.getElementById('ep-name').value.trim();
+  const d=document.getElementById('ep-drink').value.trim();
+  const p=parseInt(document.getElementById('ep-par').value)||state.bars[i].par;
+  const no=document.getElementById('ep-notes').value.trim();
+  if(n) state.bars[i].name=n;
+  if(d) state.bars[i].drink=d;
+  state.bars[i].par=p;
+  state.bars[i].notes=no;
+  state.bars[i].maps='';
+  saveState(); renderSetup();
+}
+
+function addBar(){
+  state.bars.push({name:'Nová zastávka',drink:'Drink',par:3,notes:'',maps:'',sips:0,id:Date.now()});
+  saveState(); renderSetup();
+  setTimeout(()=>{editBarSetup(state.bars.length-1);},50);
+}
+
+function addBarFromList(){
+  state.bars.push({name:'Nová zastávka',drink:'Drink',par:3,notes:'',maps:'',sips:0,id:Date.now()});
+  saveState();
+  closeList();
+  state.currentIdx = state.bars.length-1;
+  renderGame();
+  setTimeout(()=>openEditInGame('name'),100);
+}
+
+function startGame(){
+  state.currentIdx = 0;
+  saveState();
+  renderGame();
+  showScreen('s3');
+}
+
+function calcTotal(){
+  return state.bars.reduce((acc,b)=>acc+(b.sips-b.par),0);
+}
+
+function calcCumulative(upToIdx){
+  return state.bars.slice(0,upToIdx+1).reduce((acc,b)=>acc+(b.sips-b.par),0);
+}
+
+function scoreLabel(diff){
+  if(diff===0) return 'Na pare';
+  if(diff<0) return diff+' (pod parom)';
+  return '+'+diff+' (nad parom)';
+}
+
+function scoreClass(diff){
+  return diff<0?'under':diff>0?'over':'even';
+}
+
+function duplicateBar(i){
+  const orig = state.bars[i];
+  const copy = {...orig, sips:0, id:Date.now()};
+  state.bars.splice(i+1, 0, copy);
+  state.currentIdx = i+1;
+  saveState();
+  renderGame();
+  showScreen('s3');
+  setTimeout(()=>openEditInGame('name', i+1), 150);
+}
+
+function renderGame(){
+  const slider = document.getElementById('card-slider');
+  slider.innerHTML = state.bars.map((b,i)=> buildCard(b,i)).join('');
+  renderDots();
+  renderNav();
+  updateScoreBar();
+  slider.style.transition = 'none';
+  slider.style.transform = `translateX(-${state.currentIdx*100}%)`;
+}
+
+function buildCard(b,i){
+  const cumDiff = calcCumulative(i);
+  const hasSips = b.sips > 0;
+  const mapsBtn = b.maps ? `<a href="${b.maps}" target="_blank" class="maps-btn"><i class="ti ti-map-pin" aria-hidden="true"></i> Google Maps</a>` : '';
+  const statusHtml = hasSips ? `<div class="card-status ${scoreClass(cumDiff)}">${scoreLabel(cumDiff)}</div>` : '';
+  return `<div class="game-card" id="gc-${i}">
+    <div class="card-inner">
+      <div class="card-bar-num">Zastávka ${i+1} z ${state.bars.length}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="card-bar-name" id="cn-${i}">${esc(b.name)}</div>
+        <button class="edit-pen" onclick="openEditInGame('name',${i})" aria-label="Edituj názov"><i class="ti ti-pencil"></i></button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="card-bar-drink" id="cd-${i}">${esc(b.drink)}</div>
+        <button class="edit-pen" onclick="openEditInGame('drink',${i})" aria-label="Edituj drink"><i class="ti ti-pencil"></i></button>
+      </div>
+      ${mapsBtn}
+      <hr class="divider">
+      <div class="par-row">
+        <span class="par-label">Par</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="par-val" id="cp-${i}">${b.par}</span>
+          <button class="edit-pen" onclick="openEditInGame('par',${i})" aria-label="Edituj par"><i class="ti ti-pencil"></i></button>
+        </div>
+      </div>
+      <div class="sips-row">
+        <span class="sips-label">Sipy</span>
+        <div class="sips-control">
+          <button class="sip-btn" onclick="changeSips(${i},-1)">-</button>
+          <span class="sip-count" id="cs-${i}">${b.sips}</span>
+          <button class="sip-btn" onclick="changeSips(${i},1)">+</button>
+        </div>
+      </div>
+      ${statusHtml}
+      ${b.notes ? `<div class="card-notes"><span style="color:#666;font-size:11px;letter-spacing:.5px">NOTES: </span>${esc(b.notes)}</div>` : ''}
+      <div id="edit-popup-container-${i}"></div>
+      <div class="card-actions-row">
+        <button class="card-action-btn" onclick="openEditInGame('notes',${i})" aria-label="Edituj notes">
+          <i class="ti ti-notes" aria-hidden="true"></i> Notes
+        </button>
+        <button class="card-action-btn duplicate" onclick="duplicateBar(${i})" aria-label="Duplikuj zastávku">
+          <i class="ti ti-copy" aria-hidden="true"></i> Duplikuj
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function changeSips(i,delta){
+  state.bars[i].sips = Math.max(0, state.bars[i].sips + delta);
+  saveState();
+  document.getElementById('cs-'+i).textContent = state.bars[i].sips;
+  const cumDiff = calcCumulative(i);
+  const card = document.getElementById('gc-'+i).querySelector('.card-inner');
+  let statusEl = card.querySelector('.card-status');
+  if(state.bars[i].sips>0){
+    if(!statusEl){
+      statusEl = document.createElement('div');
+      statusEl.className = 'card-status';
+      card.querySelector('.sips-row').after(statusEl);
+    }
+    statusEl.className = 'card-status '+scoreClass(cumDiff);
+    statusEl.textContent = scoreLabel(cumDiff);
+  } else if(statusEl){
+    statusEl.remove();
+  }
+  updateScoreBar();
+}
+
+function openEditInGame(field, idx){
+  if(idx===undefined) idx = state.currentIdx;
+  const container = document.getElementById('edit-popup-container-'+idx);
+  if(!container) return;
+  container.innerHTML = '';
+  const b = state.bars[idx];
+  let val = field==='name'?b.name:field==='drink'?b.drink:field==='par'?b.par:(b.notes||'');
+  const type = field==='par'?'number':'text';
+  const popup = document.createElement('div');
+  popup.className='edit-popup';
+  popup.innerHTML=`<div style="font-size:11px;color:#888;margin-bottom:6px;letter-spacing:.5px">${field.toUpperCase()}</div>
+    <input class="field-input" id="ep-game-val" type="${type}" value="${esc(String(val))}" ${type==='number'?'min=1 max=9':''} />
+    <div class="edit-popup-btns">
+      <button class="edit-confirm" onclick="saveEditInGame('${field}',${idx})"><i class="ti ti-check"></i></button>
+      <button class="edit-discard" onclick="document.getElementById('edit-popup-container-${idx}').innerHTML=''"><i class="ti ti-x"></i></button>
+    </div>`;
+  container.appendChild(popup);
+  setTimeout(()=>{const inp=document.getElementById('ep-game-val');if(inp)inp.focus();},50);
+}
+
+function saveEditInGame(field, idx){
+  const val = document.getElementById('ep-game-val').value.trim();
+  if(field!=='notes' && !val) return;
+  if(field==='name') state.bars[idx].name = val;
+  else if(field==='drink') state.bars[idx].drink = val;
+  else if(field==='par') state.bars[idx].par = parseInt(val)||state.bars[idx].par;
+  else if(field==='notes') state.bars[idx].notes = val;
+  saveState();
+  const card = document.getElementById('gc-'+idx);
+  if(card){
+    if(field==='name'){const el=card.querySelector('.card-bar-name');if(el)el.textContent=val;}
+    else if(field==='drink'){const el=card.querySelector('.card-bar-drink');if(el)el.textContent=val;}
+    else if(field==='par'){const el=document.getElementById('cp-'+idx);if(el)el.textContent=state.bars[idx].par;}
+    else if(field==='notes'){
+      let notesEl = card.querySelector('.card-notes');
+      if(val){
+        if(!notesEl){
+          notesEl=document.createElement('div');
+          notesEl.className='card-notes';
+          document.getElementById('edit-popup-container-'+idx).before(notesEl);
+        }
+        notesEl.innerHTML=`<span style="color:#666;font-size:11px;letter-spacing:.5px">NOTES: </span>${esc(val)}`;
+      } else if(notesEl){ notesEl.remove(); }
+    }
+  }
+  document.getElementById('edit-popup-container-'+idx).innerHTML='';
+  updateScoreBar();
+}
+
+function renderDots(){
+  const dots = document.getElementById('progress-dots');
+  dots.innerHTML = state.bars.map((b,i)=>`
+    <span class="dot ${i===state.currentIdx?'active':i<state.currentIdx?'done':''}"></span>
+  `).join('');
+}
+
+function renderNav(){
+  const nav = document.getElementById('game-nav');
+  const isFirst = state.currentIdx===0;
+  const isLast = state.currentIdx===state.bars.length-1;
+  let btns = '';
+  if(!isFirst) btns += `<button class="nav-btn" onclick="navigate(-1)"><i class="ti ti-arrow-left"></i> Späť</button>`;
+  btns += `<button class="nav-btn" onclick="openList()"><i class="ti ti-list"></i></button>`;
+  if(isLast){
+    btns += `<button class="nav-btn primary" onclick="showResults()"><i class="ti ti-flag"></i> Finish</button>`;
+  } else {
+    btns += `<button class="nav-btn primary" onclick="navigate(1)">Ďalej <i class="ti ti-arrow-right"></i></button>`;
+  }
+  nav.innerHTML = btns;
+}
+
+function navigate(dir){
+  const newIdx = state.currentIdx + dir;
+  if(newIdx<0||newIdx>=state.bars.length) return;
+  const slider = document.getElementById('card-slider');
+  slider.style.transition = 'transform .3s ease';
+  state.currentIdx = newIdx;
+  slider.style.transform = `translateX(-${newIdx*100}%)`;
+  saveState();
+  renderDots();
+  renderNav();
+  updateScoreBar();
+}
+
+function updateScoreBar(){
+  document.getElementById('s3-name-label').textContent = state.playerName;
+  const total = calcTotal();
+  const el = document.getElementById('s3-total-score');
+  el.className = 'score-val '+scoreClass(total);
+  el.textContent = total===0?'Par':total>0?'+'+total:String(total);
+}
+
+function openList(){
+  renderListItems();
+  showScreen('s-list');
+}
+
+function closeList(){
+  showScreen('s3');
+}
+
+function renderListItems(){
+  const items = document.getElementById('list-items');
+  items.innerHTML = state.bars.map((b,i)=>{
+    const diff = b.sips-b.par;
+    const isDone = b.sips>0;
+    const isCurrent = i===state.currentIdx;
+    return `<div class="list-item" onclick="jumpTo(${i})">
+      <span class="list-dot ${isDone?'done':isCurrent?'current':''}"></span>
+      <div class="list-info">
+        <div class="list-name">${i+1}. ${esc(b.name)}</div>
+        <div class="list-detail">${esc(b.drink)} &middot; par ${b.par}</div>
+      </div>
+      <span class="list-score ${isDone?scoreClass(diff):'even'}">${isDone?(diff===0?'Par':diff>0?'+'+diff:String(diff)):'-'}</span>
+    </div>`;
+  }).join('');
+}
+
+function jumpTo(i){
+  state.currentIdx = i;
+  saveState();
+  const slider = document.getElementById('card-slider');
+  slider.style.transition='none';
+  slider.style.transform=`translateX(-${i*100}%)`;
+  renderDots(); renderNav(); updateScoreBar();
+  showScreen('s3');
+}
+
+function showResults(){
+  const total = calcTotal();
+  document.getElementById('s4-name').textContent = state.playerName;
+  document.getElementById('s4-badge').textContent = total<0?`${total} pod parom`:total>0?`+${total} nad parom`:`Na pare`;
+  const rows = document.getElementById('result-rows');
+  rows.innerHTML = state.bars.map((b,i)=>{
+    const diff = b.sips-b.par;
+    return `<div class="result-row">
+      <span class="rr-num">${i+1}</span>
+      <span class="rr-name">${esc(b.name)}</span>
+      <span class="rr-drink">${esc(b.drink)}</span>
+      <span class="rr-sips">${b.sips}/${b.par} sip</span>
+      <span class="rr-score ${scoreClass(diff)}">${diff===0?'0':diff>0?'+'+diff:String(diff)}</span>
+    </div>`;
+  }).join('');
+  const totalEl = document.getElementById('s4-total');
+  totalEl.className = 'total-val '+scoreClass(total);
+  totalEl.textContent = total===0?'Par':total>0?'+'+total:String(total);
+  showScreen('s4');
+}
+
+function exportJSON(){
+  const data = {
+    app:"Adam's Stag Pub Golf",
+    year:2026,
+    player:state.playerName,
+    totalScore:calcTotal(),
+    bars:state.bars.map((b,i)=>({
+      stop:i+1,name:b.name,drink:b.drink,par:b.par,sips:b.sips,score:b.sips-b.par,notes:b.notes||''
+    }))
+  };
+  const json = JSON.stringify(data,null,2);
+  const area = document.getElementById('export-area');
+  area.style.display='block';
+  area.textContent=json;
+  area.scrollTop=0;
+  if(navigator.clipboard) navigator.clipboard.writeText(json).catch(()=>{});
+}
+
+function reviewBars(){
+  renderSetup();
+  showScreen('s2');
+}
+
+function backToName(){
+  state={playerName:'',bars:[],currentIdx:0};
+  saveState();
+  document.getElementById('player-name').value='';
+  showScreen('s1');
+}
+
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+loadState();
+if(state.playerName && state.bars && state.bars.length>0){
+  document.getElementById('player-name').value=state.playerName;
+  renderSetup();
+}
+</script>
