@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Adam's Stag Pub Golf</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 body{background:#0f0f0f;font-family:system-ui,-apple-system,sans-serif;color:#f0f0f0;min-height:100vh}
 #app{max-width:390px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 .screen{display:none;flex-direction:column;min-height:100vh}
@@ -279,7 +279,7 @@ function renderSlide(idx,dir){
         <div style="font-size:21px;font-weight:800;color:#f0f0f0;line-height:1.2;flex:1">${esc(s.name)}</div>
         <button class="btn-icon" onclick="toggleIE(event,'ie-g-',${idx})" aria-label="Edit stop"><i class="ti ti-edit" style="font-size:15px;color:#c8a96e"></i></button>
       </div>
-      ${s.maps?`<div style="margin-top:8px"><a href="${s.maps}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:8px 12px;color:#c8a96e;text-decoration:none;font-size:12px;font-weight:600"><i class="ti ti-map-pin" style="font-size:13px"></i>Open in Maps</a></div>`:""}
+      <div style="margin-top:8px"><button onclick="openMaps('${esc(s.name)}')" style="display:inline-flex;align-items:center;gap:6px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:8px 12px;color:#c8a96e;text-decoration:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit"><i class="ti ti-map-pin" style="font-size:13px"></i>Open in Maps</button></div>
     </div>
     <div class="ie-box" id="ie-g-${idx}"></div>
     <div class="card" style="margin-bottom:10px">
@@ -344,6 +344,10 @@ function renderNav(idx){
   document.getElementById("gnav").innerHTML=h;
 }
 
+function openMaps(name){
+  const q=encodeURIComponent(name+" Bucharest");
+  window.open("https://www.google.com/maps/search/?api=1&query="+q,"_blank");
+}
 function chSips(idx,d){ST.stops[idx].sips=Math.max(0,ST.stops[idx].sips+d);save();renderSlide(idx,null);}
 function nextStop(){if(ST.idx<ST.stops.length-1){ST.idx++;save();renderSlide(ST.idx,1);}}
 function prevStop(){if(ST.idx>0){ST.idx--;save();renderSlide(ST.idx,-1);}}
